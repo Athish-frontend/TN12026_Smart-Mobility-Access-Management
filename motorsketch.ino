@@ -1,6 +1,6 @@
   char command;
 
-  // ===== Board 1 (Yellow - Left Motors) =====
+ 
   int LF_EN  = 5;
   int LF_IN1 = 8;
   int LF_IN2 = 9;
@@ -9,7 +9,6 @@
   int LR_IN1 = 10;
   int LR_IN2 = 11;
 
-  // ===== Board 2 (Blue - Right Motors) =====
   int RF_EN  = 3;
   int RF_IN1 = 2;
   int RF_IN2 = 4;
@@ -18,7 +17,7 @@
   int RR_IN1 = 12;
   int RR_IN2 = 13;
 
-  int speed = 150;  // Adjust 0–255 for motor speed
+  int speed = 150;  
 
   void setup() {
     Serial.begin(9600);
@@ -63,7 +62,7 @@
     }
   }
 
-  // ================= Motor Functions =================
+  
   void moveForward() {
     // Left Motors Forward
     digitalWrite(LF_IN1, HIGH); digitalWrite(LF_IN2, LOW);

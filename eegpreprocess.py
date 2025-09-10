@@ -9,7 +9,7 @@ import serial
 import serial.tools.list_ports
 import time
 
-# ================== Load Dataset ==================
+#Load Dataset 
 file_path = "museMonitor_with_directions.csv"  # <-- already has Direction column
 df = pd.read_csv(file_path)
 
@@ -22,11 +22,10 @@ df = df.drop_duplicates()
 df = df.dropna(thresh=len(df.columns) - 5)
 df = df.interpolate()
 
-# ================== Use Direction Column ==================
 if "Direction" not in df.columns:
-    raise ValueError("❌ Dataset must contain a 'Direction' column")
+    raise ValueError("Dataset must contain a 'Direction' column")
 
-print("📊 Class distribution (before balancing):")
+print("Class distribution (before balancing):")
 print(df["Direction"].value_counts())
 
 # Balance dataset so all classes have equal rows
@@ -35,10 +34,10 @@ df_balanced = df.groupby("Direction").apply(
     lambda x: x.sample(min_count, random_state=42)
 ).reset_index(drop=True)
 
-print("\n📊 Class distribution (after balancing):")
+print("\nClass distribution (after balancing):")
 print(df_balanced["Direction"].value_counts())
 
-# ================== Features & Labels ==================
+# Features & Labels 
 X = df_balanced.drop(columns=["Direction"], errors="ignore")
 y = df_balanced["Direction"]
 
@@ -56,7 +55,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     X_scaled, y_encoded, test_size=0.2, random_state=42, stratify=y_encoded
 )
 
-# ================== Build Model ==================
+# Build Model
 model = keras.Sequential([
     keras.layers.Input(shape=(X_train.shape[1],)),
     keras.layers.Dense(128, activation="relu"),
@@ -67,15 +66,15 @@ model = keras.Sequential([
 model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=25, batch_size=32)
 
-# ================== Evaluate ==================
+# Evaluate
 y_pred = np.argmax(model.predict(X_test), axis=1)
-print("\n📊 Classification Report:")
+print("\nClassification Report:")
 print(classification_report(y_test, y_pred, target_names=class_names))
 
-print("📊 Confusion Matrix:")
+print("Confusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
 
-# ================== Arduino Connection ==================
+#  Arduino Connection 
 def find_arduino_port():
     ports = serial.tools.list_ports.comports()
     for port in ports:
@@ -91,15 +90,15 @@ if arduino_port is None:
     for i, port in enumerate(ports):
         print(f"{i+1}: {port.device} - {port.description}")
     if len(ports) == 0:
-        raise Exception("❌ No serial ports found.")
+        raise Exception(" No serial ports found.")
     choice = input("Enter the number of the correct COM port: ")
     arduino_port = ports[int(choice) - 1].device
 
-print(f"✅ Arduino will use port: {arduino_port}")
+print(f"Arduino will use port: {arduino_port}")
 arduino = serial.Serial(arduino_port, 9600)
 time.sleep(2)
 
-# ================== Command Map ==================
+# Command Map 
 command_map = {
     "front": "F",
     "back": "B",
@@ -108,8 +107,8 @@ command_map = {
     "stop": "S"
 }
 
-# ================== Streaming ==================
-print("🚀 Streaming predictions to Arduino...")
+# Streaming
+print("Streaming predictions to Arduino...")
 
 try:
     for i in range(len(df_balanced)):
@@ -127,14 +126,15 @@ try:
             arduino.write(command.encode())
             print(f"Row {i}: Predicted {direction} -> Sent {command}")
         except serial.SerialException:
-            print("❌ Arduino disconnected.")
+            print("Arduino disconnected.")
             break
 
         time.sleep(1)
 
 except KeyboardInterrupt:
-    print("\n⏹ Stopped manually.")
+    print("\nStopped manually.")
 finally:
     if arduino.is_open:
         arduino.close()
-    print("🔌 Serial connection closed.")
+    print("Serial connection closed.")
+

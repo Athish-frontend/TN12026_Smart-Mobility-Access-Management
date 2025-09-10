@@ -45,13 +45,13 @@
 
     stopMotors();
 
-    Serial.println("✅ Arduino Ready - 4 Motor Control Active");
+    Serial.println("Arduino Ready - 4 Motor Control Active");
   }
 
   void loop() {
     if (Serial.available() > 0) {
       command = Serial.read();
-      Serial.print("📥 Received: ");
+      Serial.print("Received: ");
       Serial.println(command);
 
       if (command == 'F') moveForward();
@@ -59,7 +59,7 @@
       else if (command == 'L') turnLeft();
       else if (command == 'R') turnRight();
       else if (command == 'S') stopMotors();
-      else Serial.println("⚠️ Unknown command");
+      else Serial.println("Unknown command");
     }
   }
 
@@ -74,7 +74,7 @@
     digitalWrite(RR_IN1, HIGH); digitalWrite(RR_IN2, LOW);
 
     setSpeed(speed);
-    Serial.println("➡️ Moving Forward");
+    Serial.println("Moving Forward");
   }
 
   void moveBackward() {
@@ -87,7 +87,7 @@
     digitalWrite(RR_IN1, LOW); digitalWrite(RR_IN2, HIGH);
 
     setSpeed(speed);
-    Serial.println("⬅️ Moving Backward");
+    Serial.println("Moving Backward");
   }
 
   void turnLeft() {
@@ -100,7 +100,7 @@
     digitalWrite(RR_IN1, HIGH); digitalWrite(RR_IN2, LOW);
 
     setSpeed(speed);
-    Serial.println("↪️ Turning Left");
+    Serial.println("Turning Left");
   }
 
   void turnRight() {
@@ -113,7 +113,7 @@
     digitalWrite(RR_IN1, LOW); digitalWrite(RR_IN2, HIGH);
 
     setSpeed(speed);
-    Serial.println("↩️ Turning Right");
+    Serial.println("Turning Right");
   }
 
   void stopMotors() {
@@ -127,7 +127,7 @@
     digitalWrite(RF_IN1, LOW); digitalWrite(RF_IN2, LOW);
     digitalWrite(RR_IN1, LOW); digitalWrite(RR_IN2, LOW);
 
-    Serial.println("⏹️ Stopped");
+    Serial.println("Stopped");
   }
 
   void setSpeed(int spd) {
